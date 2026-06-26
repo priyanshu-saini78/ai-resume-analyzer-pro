@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>AI Resume Analyzer Pro</title>
+
+<link rel="stylesheet" href="style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+</head>
+
+<body>
+
+<header>
+
+<div class="container">
+
+<h1>🤖 AI Resume Analyzer Pro</h1>
+
+<p>
+AI Powered ATS Resume Checker
+</p>
+
+</div>
+
+</header>
+
+<section class="hero">
+
+<h2>Boost Your Resume with AI</h2>
+
+<p>
+
+Upload your resume, paste a Job Description,
+and instantly receive ATS score,
+resume analysis and AI suggestions.
+
+</p>
+
+</section>
+
+<section class="upload-card">
+
+<h2>Resume Analysis</h2>
+
+<input
+type="file"
+id="resumeFile"
+accept=".pdf,.doc,.docx">
+
+<textarea
+
+id="jobDescription"
+
+placeholder="Paste Job Description here..."
+
+></textarea>
+
+<button id="analyzeBtn">
+
+Analyze Resume
+
+</button>
+
+</section>
+
+<section id="result"></section>
+
+<script src="script.js"></script>
+
+</body>
+
+</html>
