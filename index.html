@@ -3,80 +3,597 @@
 
 <head>
 
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+    <title>AI Resume Analyzer Pro | ATS Resume Checker</title>
 
-<title>AI Resume Analyzer Pro</title>
+    <meta name="description"
+        content="Analyze your resume with AI. Get ATS Score, Resume Match, Missing Skills, Resume Summary and AI Suggestions instantly.">
 
-<link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css">
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 </head>
 
 <body>
 
-<header>
+<div class="bg-animation"></div>
 
-<div class="container">
+<!-- ================= NAVBAR ================= -->
 
-<h1>🤖 AI Resume Analyzer Pro</h1>
+<nav>
 
-<p>
-AI Powered ATS Resume Checker
-</p>
+    <div class="logo">
 
-</div>
+        🤖 AI Resume Analyzer
 
-</header>
+    </div>
+
+    <ul>
+
+        <li><a href="#">Home</a></li>
+
+        <li><a href="#features">Features</a></li>
+
+        <li><a href="#analyzer">Analyzer</a></li>
+
+        <li><a href="#result">Results</a></li>
+
+    </ul>
+
+</nav>
+
+<!-- ================= HERO ================= -->
 
 <section class="hero">
 
-<h2>Boost Your Resume with AI</h2>
+    <div class="hero-left">
 
-<p>
+        <span class="tag">
 
-Upload your resume, paste a Job Description,
-and instantly receive ATS score,
-resume analysis and AI suggestions.
+            🚀 AI Powered Resume Scanner
 
-</p>
+        </span>
+
+        <h1>
+
+            Improve Your Resume
+
+            <span>with Artificial Intelligence</span>
+
+        </h1>
+
+        <p>
+
+            Upload your resume and paste the Job Description.
+
+            Our AI analyzes your resume and instantly generates
+
+            ATS Score, Resume Match, Missing Skills,
+
+            Resume Summary and AI-powered suggestions.
+
+        </p>
+
+        <div class="hero-buttons">
+
+            <a href="#analyzer" class="primary-btn">
+
+                Analyze Resume
+
+            </a>
+
+            <a href="#features" class="secondary-btn">
+
+                Learn More
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <div class="hero-right">
+
+        <div class="hero-card">
+
+            <h3>
+
+                AI Analysis Includes
+
+            </h3>
+
+            <ul>
+
+                <li>✅ ATS Score</li>
+
+                <li>✅ Resume Match</li>
+
+                <li>✅ Skills Match</li>
+
+                <li>✅ Missing Keywords</li>
+
+                <li>✅ Resume Summary</li>
+
+                <li>✅ AI Suggestions</li>
+
+                <li>✅ PDF Report</li>
+
+            </ul>
+
+        </div>
+
+    </div>
 
 </section>
 
-<section class="upload-card">
+<!-- ========= PART 2 CONTINUES FROM HERE ========= -->
 
-<h2>Resume Analysis</h2>
+<!-- ================= FEATURES ================= -->
 
-<input
-type="file"
-id="resumeFile"
-accept=".pdf,.doc,.docx">
 
-<textarea
 
-id="jobDescription"
+<!-- ================= ANALYZER ================= -->
 
-placeholder="Paste Job Description here..."
+<section class="upload-section" id="analyzer">
 
-></textarea>
+    <h2 class="section-title">Analyze Your Resume</h2>
 
-<button id="analyzeBtn">
+    <p class="section-subtitle">
+        Upload your resume and paste the Job Description to get an AI-powered ATS analysis.
+    </p>
 
-Analyze Resume
+    <div class="upload-card">
 
-</button>
+        <label for="resumeFile" class="upload-box">
+
+            <div class="upload-icon">📄</div>
+
+            <h3>Upload Resume</h3>
+
+            <p>Drag & Drop your Resume here</p>
+
+            <span>or Click to Browse</span>
+
+            <input
+                type="file"
+                id="resumeFile"
+                accept=".pdf,.doc,.docx"
+                hidden>
+
+        </label>
+
+        <div id="fileName" class="file-name">
+            No file selected
+        </div>
+
+        <textarea
+            id="jobDescription"
+            placeholder="Paste Job Description here..."></textarea>
+
+        <button id="analyzeBtn" class="primary-btn">
+            🚀 Analyze Resume
+        </button>
+
+    </div>
 
 </section>
 
-<section id="result"></section>
+<section id="result" class="result-section">
+
+    <h2 class="section-title">
+
+        AI Analysis Report
+
+    </h2>
+
+    <p class="section-subtitle">
+
+        Your complete resume evaluation will appear below after AI analysis.
+
+    </p>
+
+    <div id="resultContainer" class="result-container">
+
+        <!-- SCORE CARDS -->
+
+        <div class="score-grid">
+
+            <div class="score-card">
+
+                <h3>ATS Score</h3>
+
+                <div id="atsScore" class="score-number">
+
+                    --
+
+                </div>
+
+            </div>
+
+            <div class="score-card">
+
+                <h3>Resume Match</h3>
+
+                <div id="resumeScore" class="score-number">
+
+                    --
+
+                </div>
+
+            </div>
+
+            <div class="score-card">
+
+                <h3>Skills Match</h3>
+
+                <div id="skillsScore" class="score-number">
+
+                    --
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- CHART -->
+
+        <div class="chart-card">
+
+            <h3>
+
+                Resume Analysis Chart
+
+            </h3>
+
+            <canvas id="scoreChart"></canvas>
+
+        </div>
+
+        <!-- AI RESULT CARDS -->
+
+        <div class="analysis-grid">
+
+            <div class="analysis-card">
+
+                <h3>Resume Summary</h3>
+
+                <p id="summary">
+
+                    Waiting for AI Analysis...
+
+                </p>
+
+            </div>
+
+            <div class="analysis-card">
+
+                <h3>Strengths</h3>
+
+                <p id="strengths">
+
+                    Waiting for AI Analysis...
+
+                </p>
+
+            </div>
+
+            <div class="analysis-card">
+
+                <h3>Missing Skills</h3>
+
+                <p id="missingSkills">
+
+                    Waiting for AI Analysis...
+
+                </p>
+
+            </div>
+
+            <div class="analysis-card">
+
+                <h3>Improvement Suggestions</h3>
+
+                <p id="suggestions">
+
+                    Waiting for AI Analysis...
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- BUTTONS -->
+
+        <div class="result-buttons">
+
+            <button id="downloadPdf">
+
+                📄 Download PDF Report
+
+            </button>
+
+            <button id="copyResult">
+
+                📋 Copy Result
+
+            </button>
+
+            <button id="newAnalysis">
+
+                🔄 New Analysis
+
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+<section id="features" class="features">
+
+    <h2 class="section-title">
+
+        Why Choose AI Resume Analyzer?
+
+    </h2>
+
+    <p class="section-subtitle">
+
+        Everything you need to optimize your resume before applying for your dream job.
+
+    </p>
+
+    <div class="feature-grid">
+
+        <div class="feature-card">
+
+            <div class="feature-icon">📊</div>
+
+            <h3>ATS Score</h3>
+
+            <p>
+
+                Check how well your resume performs against modern Applicant Tracking Systems.
+
+            </p>
+
+        </div>
+
+        <div class="feature-card">
+
+            <div class="feature-icon">🎯</div>
+
+            <h3>Resume Match</h3>
+
+            <p>
+
+                Compare your resume with the job description and calculate the matching percentage.
+
+            </p>
+
+        </div>
+
+        <div class="feature-card">
+
+            <div class="feature-icon">🧠</div>
+
+            <h3>AI Suggestions</h3>
+
+            <p>
+
+                Receive intelligent recommendations to improve your resume instantly.
+
+            </p>
+
+        </div>
+
+        <div class="feature-card">
+
+            <div class="feature-icon">💼</div>
+
+            <h3>Skills Match</h3>
+
+            <p>
+
+                Discover missing technical skills and important keywords recruiters expect.
+
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ================= LOADING ================= -->
+
+<div id="loading" class="loading">
+
+    <div class="ai-loader">
+
+        <div class="loader-circle"></div>
+
+        <div class="loader-circle delay1"></div>
+
+        <div class="loader-circle delay2"></div>
+
+    </div>
+
+    <h2>🤖 AI is analyzing your resume...</h2>
+
+    <p>Please wait while we compare your resume with the Job Description.</p>
+
+    <div class="progress-bar">
+
+        <div class="progress-fill"></div>
+
+    </div>
+
+</div>
+
+
+<!-- ========= PART 4 CONTINUES FROM HERE ========= -->
+
+<!-- ================= HOW IT WORKS ================= -->
+
+<section class="how-it-works">
+
+    <h2 class="section-title">
+
+        How It Works
+
+    </h2>
+
+    <p class="section-subtitle">
+
+        Analyze your resume in just three simple steps.
+
+    </p>
+
+    <div class="steps">
+
+        <div class="step-card">
+
+            <div class="step-number">
+
+                1
+
+            </div>
+
+            <h3>
+
+                Upload Resume
+
+            </h3>
+
+            <p>
+
+                Upload your Resume in PDF, DOC or DOCX format.
+
+            </p>
+
+        </div>
+
+        <div class="step-card">
+
+            <div class="step-number">
+
+                2
+
+            </div>
+
+            <h3>
+
+                Paste Job Description
+
+            </h3>
+
+            <p>
+
+                Add the job description you want to apply for.
+
+            </p>
+
+        </div>
+
+        <div class="step-card">
+
+            <div class="step-number">
+
+                3
+
+            </div>
+
+            <h3>
+
+                Get AI Report
+
+            </h3>
+
+            <p>
+
+                Instantly receive ATS Score, Resume Match,
+                Missing Skills and AI Suggestions.
+
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ================= CALL TO ACTION ================= -->
+
+<section class="cta">
+
+    <h2>
+
+        Ready to Improve Your Resume?
+
+    </h2>
+
+    <p>
+
+        Use AI to optimize your resume and increase your chances of getting shortlisted.
+
+    </p>
+
+    <a href="#analyzer" class="primary-btn">
+
+        Analyze Now
+
+    </a>
+
+</section>
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+    <div class="footer-content">
+
+        <h3>
+
+            🤖 AI Resume Analyzer Pro
+
+        </h3>
+
+        <p>
+
+            AI Powered ATS Resume Checker
+
+        </p>
+
+        <p>
+
+            Built with ❤️ using HTML, CSS, JavaScript,
+            Google Gemini AI and n8n Automation.
+
+        </p>
+
+    </div>
+
+</footer>
 
 <script src="script.js"></script>
 
 </body>
 
 </html>
+

@@ -1,232 +1,467 @@
-document.addEventListener("DOMContentLoaded", () => {
+// ======================================
+// AI Resume Analyzer Pro
+// Part 1 - DOM + File Upload + Analyze
+// ======================================
 
-    const analyzeBtn = document.getElementById("analyzeBtn");
-    const resultDiv = document.getElementById("result");
+// ---------- DOM Elements ----------
 
-    analyzeBtn.addEventListener("click", async () => {
+const analyzeBtn = document.getElementById("analyzeBtn");
+const resumeFile = document.getElementById("resumeFile");
+const jobDescription = document.getElementById("jobDescription");
 
-        const resumeFile = document.getElementById("resumeFile").files[0];
-        const jobDescription = document.getElementById("jobDescription").value.trim();
+const loading = document.getElementById("loading");
+const resultSection = document.getElementById("result");
 
-        // Validation
-        if (!resumeFile) {
-            alert("Please upload your resume.");
-            return;
-        }
+const fileName = document.getElementById("fileName");
 
-        if (!jobDescription) {
-            alert("Please paste the Job Description.");
-            return;
-        }
+// ---------- File Name Preview ----------
 
-        // Loading UI
-        resultDiv.innerHTML = `
-            <div class="loader">
-                <div class="spinner"></div>
-                <h2>Analyzing Your Resume...</h2>
-                <p>Please wait while AI compares your resume with the Job Description.</p>
-            </div>
-        `;
+resumeFile.addEventListener("change", () => {
 
-        // Form Data
-        const formData = new FormData();
-        formData.append("resume", resumeFile);
-        formData.append("jobDescription", jobDescription);
+    if (resumeFile.files.length > 0) {
 
-        try {
+        fileName.innerHTML = "✅ " + resumeFile.files[0].name;
 
-            const response = await fetch(
-                "https://priyanshusaini87.app.n8n.cloud/webhook/resume-analyzer",
-                {
-                    method: "POST",
-                    body: formData
-                }
-            );
+    } else {
 
-            if (!response.ok) {
-                throw new Error("Server Error");
-            }
+        fileName.innerHTML = "No file selected";
 
-            const result = await response.json();
-            const data = result.output;
-
-            console.log("AI Response:", data);
-
-            // 👇 Part 2 yahin se start hoga
-
-           resultDiv.innerHTML = `
-
-<div class="candidate-card">
-    <h2>${data.candidate_name}</h2>
-    <p>AI Resume Analysis Report</p>
-</div>
-
-<div class="score-container">
-
-    <div class="score-card">
-        <h3>Resume Score</h3>
-        <h1>${data.resume_score}%</h1>
-    </div>
-
-    <div class="score-card">
-        <h3>ATS Score</h3>
-        <h1>${data.ats_score}%</h1>
-    </div>
-
-    <div class="score-card">
-        <h3>Skills Match</h3>
-        <h1>${data.skills_match_percentage}%</h1>
-    </div>
-
-</div>
-
-<div class="result-card">
-    <h3>✅ Matching Skills</h3>
-    <div>
-        ${data.matching_skills.map(skill =>
-        `<span class="badge">${skill}</span>`).join("")}
-    </div>
-</div>
-
-<div class="result-card">
-    <h3>❌ Missing Skills</h3>
-    <div>
-        ${data.missing_skills.map(skill =>
-        `<span class="badge-red">${skill}</span>`).join("")}
-    </div>
-</div>
-
-<div class="result-card">
-    <h3>💪 Strengths</h3>
-    <ul>
-        ${data.strengths.map(item => `<li>${item}</li>`).join("")}
-    </ul>
-</div>
-
-<div class="result-card">
-    <h3>⚠️ Weaknesses</h3>
-    <ul>
-        ${data.weaknesses.map(item => `<li>${item}</li>`).join("")}
-    </ul>
-</div>
-
-<div class="result-card">
-    <h3>🚀 Improvement Suggestions</h3>
-    <ul>
-        ${data.improvement_suggestions.map(item => `<li>${item}</li>`).join("")}
-    </ul>
-</div>
-
-<div class="result-card">
-    <h3>🔑 Recommended Keywords</h3>
-    <div>
-        ${data.recommended_keywords.map(item =>
-        `<span class="badge">${item}</span>`).join("")}
-    </div>
-</div>
-
-<div class="result-card">
-    <h3>Experience Level</h3>
-    <span class="experience-badge">
-        ${data.experience_level}
-    </span>
-</div>
-
-<div class="result-card">
-    <h3>📄 Summary</h3>
-    <p>${data.summary}</p>
-</div>
-
-<hr style="margin:30px 0;">
-
-<div class="result-card">
-    <h3>📊 Skills Analysis</h3>
-    <canvas id="skillsChart"></canvas>
-</div>
-
-<button id="downloadPdf">
-📄 Download PDF Report
-</button>
-
-`; 
-const ctx = document.getElementById("skillsChart");
-
-new Chart(ctx, {
-    type: "doughnut",
-    data: {
-        labels: [
-            "Resume Score",
-            "ATS Score",
-            "Skills Match"
-        ],
-        datasets: [{
-            data: [
-                data.resume_score,
-                data.ats_score,
-                data.skills_match_percentage
-            ],
-            backgroundColor: [
-                "#2563EB",
-                "#22C55E",
-                "#F59E0B"
-            ]
-        }]
-    },
-    options: {
-        responsive: true,
-        plugins: {
-            legend: {
-                position: "bottom"
-            }
-        }
     }
-});
-const pdfBtn = document.getElementById("downloadPdf");
 
-pdfBtn.addEventListener("click", () => {
+});
+
+// ---------- Analyze Button ----------
+
+analyzeBtn.addEventListener("click", analyzeResume);
+
+// ---------- Main Function ----------
+
+async function analyzeResume() {
+
+    if (!resumeFile.files.length) {
+
+        alert("Please upload your Resume.");
+
+        return;
+
+    }
+
+    if (jobDescription.value.trim() === "") {
+
+        alert("Please paste the Job Description.");
+
+        return;
+
+    }
+
+    loading.style.display = "block";
+
+    resultSection.style.display = "none";
+
+    const formData = new FormData();
+
+    formData.append("resume", resumeFile.files[0]);
+
+    formData.append("jobDescription", jobDescription.value);
+
+    try {
+
+        const response = await fetch(
+            "https://priyanshusaini87.app.n8n.cloud/webhook/resume-analyzer",
+            {
+                method: "POST",
+                body: formData
+            }
+        );
+
+        if (!response.ok) {
+
+            throw new Error("Server Error");
+
+        }
+
+        const result = await response.json();
+
+        console.log(result);
+
+        const data = result.output;
+
+        // ---------- Hide Loading ----------
+
+loading.style.display = "none";
+
+resultSection.style.display = "block";
+
+// ---------- DOM Result Elements ----------
+
+animateScore(atsScore,data.ats_score);
+
+animateScore(resumeScore,data.resume_score);
+
+animateScore(skillsScore,data.skills_match_percentage);
+const summary = document.getElementById("summary");
+const strengths = document.getElementById("strengths");
+const missingSkills = document.getElementById("missingSkills");
+const suggestions = document.getElementById("suggestions");
+
+// ---------- Fill Score Cards ----------
+
+atsScore.innerHTML = data.ats_score + "%";
+
+resumeScore.innerHTML = data.resume_score + "%";
+
+skillsScore.innerHTML = data.skills_match_percentage + "%";
+
+// ---------- Fill AI Analysis ----------
+
+summary.innerHTML = data.summary || "No Summary";
+
+strengths.innerHTML = Array.isArray(data.strengths)
+    ? data.strengths.join("<br>")
+    : data.strengths;
+
+missingSkills.innerHTML = Array.isArray(data.missing_skills)
+    ? data.missing_skills.join("<br>")
+    : data.missing_skills;
+
+suggestions.innerHTML = Array.isArray(data.improvement_suggestions)
+    ? data.improvement_suggestions.join("<br>")
+    : data.improvement_suggestions;
+
+// ---------- Create Chart ----------
+
+const ctx = document.getElementById("scoreChart");
+
+if (window.resumeChart) {
+
+    window.resumeChart.destroy();
+
+}
+
+window.resumeChart = new Chart(ctx, {
+
+    type: "doughnut",
+
+    data: {
+
+        labels: [
+
+            "ATS Score",
+
+            "Resume Score",
+
+            "Skills Match"
+
+        ],
+
+        datasets: [
+
+            {
+
+                data: [
+
+                    data.ats_score,
+
+                    data.resume_score,
+
+                    data.skills_match_percentage
+
+                ],
+
+                backgroundColor: [
+
+                    "#3b82f6",
+
+                    "#22c55e",
+
+                    "#f59e0b"
+
+                ],
+
+                borderWidth: 0
+
+            }
+
+        ]
+
+    },
+
+    options: {
+
+        responsive: true,
+
+        plugins: {
+
+            legend: {
+
+                position: "bottom"
+
+            }
+
+        }
+
+    }
+
+});
+
+showResultAnimation();
+
+showToast("✅ Resume analyzed successfully!");
+
+// ======================================
+// PART 3
+// PDF + Copy + New Analysis
+// ======================================
+
+// ---------- Download PDF ----------
+
+document.getElementById("downloadPdf").addEventListener("click", () => {
 
     const { jsPDF } = window.jspdf;
 
     const doc = new jsPDF();
 
+    doc.setFont("helvetica", "bold");
     doc.setFontSize(22);
-    doc.text("AI Resume Analysis Report",20,20);
+    doc.text("AI Resume Analysis Report", 20, 20);
 
-    doc.setFontSize(14);
+    doc.setFontSize(13);
 
-    doc.text(`Candidate: ${data.candidate_name}`,20,40);
+    doc.text(
+        "Generated by AI Resume Analyzer Pro",
+        20,
+        30
+    );
 
-    doc.text(`Resume Score: ${data.resume_score}%`,20,50);
+    doc.line(20, 35, 190, 35);
 
-    doc.text(`ATS Score: ${data.ats_score}%`,20,60);
+    doc.text(
+        "ATS Score : " +
+        document.getElementById("atsScore").innerText,
+        20,
+        50
+    );
 
-    doc.text(`Skills Match: ${data.skills_match_percentage}%`,20,70);
+    doc.text(
+        "Resume Match : " +
+        document.getElementById("resumeScore").innerText,
+        20,
+        60
+    );
 
-    doc.text(`Experience: ${data.experience_level}`,20,80);
+    doc.text(
+        "Skills Match : " +
+        document.getElementById("skillsScore").innerText,
+        20,
+        70
+    );
 
-    doc.text("Summary:",20,95);
+    doc.text("Summary :", 20, 90);
 
-    const summary = doc.splitTextToSize(data.summary,170);
+    const summary = doc.splitTextToSize(
+        document.getElementById("summary").innerText,
+        170
+    );
 
-    doc.text(summary,20,105);
+    doc.text(summary, 20, 100);
 
-    doc.save("Resume_Report.pdf");
+    doc.save("AI_Resume_Report.pdf");
 
 });
-        } catch (error) {
 
-            console.error(error);
+// ---------- Copy Result ----------
 
-            resultDiv.innerHTML = `
-        
-                <div class="result-card">
-                    <h2>❌ Something went wrong</h2>
-                    <p>Unable to connect to AI Resume Analyzer.</p>
-                </div>
-            `;
+document.getElementById("copyResult").addEventListener("click", () => {
 
-        }
+    const text =
+
+`ATS Score : ${document.getElementById("atsScore").innerText}
+
+Resume Match : ${document.getElementById("resumeScore").innerText}
+
+Skills Match : ${document.getElementById("skillsScore").innerText}
+
+Summary :
+
+${document.getElementById("summary").innerText}
+
+Strengths :
+
+${document.getElementById("strengths").innerText}
+
+Missing Skills :
+
+${document.getElementById("missingSkills").innerText}
+
+Suggestions :
+
+${document.getElementById("suggestions").innerText}
+`;
+
+    navigator.clipboard.writeText(text);
+
+    showToast("📋 Result copied successfully!");
+
+});
+
+// ---------- New Analysis ----------
+
+document.getElementById("newAnalysis").addEventListener("click", () => {
+
+    resumeFile.value = "";
+
+    fileName.innerHTML = "No file selected";
+
+    jobDescription.value = "";
+
+    document.getElementById("atsScore").innerHTML = "--";
+
+    document.getElementById("resumeScore").innerHTML = "--";
+
+    document.getElementById("skillsScore").innerHTML = "--";
+
+    document.getElementById("summary").innerHTML =
+    "Waiting for AI Analysis...";
+
+    document.getElementById("strengths").innerHTML =
+    "Waiting for AI Analysis...";
+
+    document.getElementById("missingSkills").innerHTML =
+    "Waiting for AI Analysis...";
+
+    document.getElementById("suggestions").innerHTML =
+    "Waiting for AI Analysis...";
+
+    if(window.resumeChart){
+
+        window.resumeChart.destroy();
+
+    }
+
+    window.scrollTo({
+
+        top:0,
+
+        behavior:"smooth"
 
     });
 
 });
+
+    }
+
+    catch(error){
+
+        loading.style.display="none";
+
+        alert("Something went wrong.");
+
+        console.error(error);
+
+    }
+
+}
+
+// ======================================
+// PART 4
+// Premium Animations
+// ======================================
+
+// ---------- Animated Counter ----------
+
+function animateScore(element, target) {
+
+    let current = 0;
+
+    const speed = 20;
+
+    const increment = Math.ceil(target / 40);
+
+    const timer = setInterval(() => {
+
+        current += increment;
+
+        if (current >= target) {
+
+            current = target;
+
+            clearInterval(timer);
+
+        }
+
+        element.innerHTML = current + "%";
+
+    }, speed);
+
+}
+
+// ---------- Show Result Animation ----------
+
+function showResultAnimation() {
+
+    const resultContainer = document.getElementById("resultContainer");
+
+    resultContainer.style.opacity = "0";
+
+    resultContainer.style.transform = "translateY(40px)";
+
+    resultContainer.style.transition = ".6s";
+
+    setTimeout(() => {
+
+        resultContainer.style.opacity = "1";
+
+        resultContainer.style.transform = "translateY(0px)";
+
+    },100);
+
+}
+
+// ---------- Toast Message ----------
+
+function showToast(message){
+
+    let toast = document.getElementById("toast");
+
+    if(!toast){
+
+        toast = document.createElement("div");
+
+        toast.id = "toast";
+
+        document.body.appendChild(toast);
+
+    }
+
+    toast.innerHTML = message;
+
+    toast.style.cssText = `
+
+        position:fixed;
+        top:25px;
+        right:25px;
+        background:#22c55e;
+        color:white;
+        padding:15px 22px;
+        border-radius:12px;
+        font-weight:600;
+        z-index:99999;
+        box-shadow:0 15px 35px rgba(0,0,0,.25);
+        opacity:0;
+        transition:.4s;
+
+    `;
+
+    setTimeout(()=>{
+
+        toast.style.opacity="1";
+
+    },100);
+
+    setTimeout(()=>{
+
+        toast.style.opacity="0";
+
+    },2500);
+
+}
