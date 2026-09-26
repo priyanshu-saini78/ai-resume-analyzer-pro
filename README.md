@@ -12,6 +12,18 @@ The application accepts a resume and a job description, sends the submitted data
 
 The project demonstrates how a web application can be connected to an AI-powered automation workflow using REST APIs and webhooks.
 
+### Project Status
+
+**Status: Built and tested — hosted backend currently inactive**
+
+- Frontend built using HTML, CSS, and JavaScript.
+- n8n workflow integrated with Google Gemini AI.
+- Application tested during the n8n Cloud trial.
+- The 14-day n8n Cloud trial has ended, so the hosted workflow is currently inactive.
+- The project is retained as a portfolio demonstration.
+
+The n8n workflow serves as the backend for AI processing. The frontend and workflow were developed as part of this project.
+
 ---
 
 ## 🎯 Problem Statement
@@ -239,6 +251,8 @@ The resume is submitted as a file and the job description is submitted as form d
 
 The n8n workflow processes the request and returns the AI-generated analysis response to the frontend.
 
+**Note:** The hosted n8n workflow is currently inactive. A working analysis request requires an available and properly configured n8n workflow.
+
 ---
 
 ## 📥 Input
@@ -335,6 +349,8 @@ The project was tested using resume and job-description inputs to verify the mai
 - Results rendering
 - PDF report generation
 
+The application was tested while the n8n Cloud workflow was available. The hosted workflow is currently inactive because the trial has ended.
+
 ---
 
 ## 🧩 Example Analysis
@@ -398,7 +414,8 @@ The current implementation has some limitations:
 - Analysis quality depends on the submitted resume and job description.
 - AI-generated scores can vary between different inputs.
 - ATS-style scoring does not represent the exact scoring algorithm of commercial ATS platforms.
-- The backend webhook requires an available n8n workflow.
+- The hosted backend webhook is currently inactive because the n8n Cloud trial ended.
+- A working analysis request requires an available n8n workflow.
 - Production deployments would require stronger API security and abuse protection.
 
 ---
@@ -453,30 +470,6 @@ The project can be adapted for:
 - Job application preparation
 
 A recruitment workflow could use a similar architecture to automatically evaluate candidate resumes against job requirements before human review.
-
----
-
-## 📌 Project Status
-
-**Status: Archived Project**
-
-This project was built as a practical AI automation project to demonstrate the integration of:
-
-```text
-Web Interface
-      ↓
-REST API
-      ↓
-n8n Automation
-      ↓
-Google Gemini AI
-      ↓
-AI Analysis
-      ↓
-Results Dashboard
-```
-
-The project is maintained as a portfolio demonstration of AI automation and workflow integration.
 
 ---
 
